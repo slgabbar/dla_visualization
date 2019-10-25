@@ -1,0 +1,22 @@
+.line {
+	stroke: black;
+	fill: none;
+	stroke-width: 2px;
+	clip-path: url(#clip);
+}
+
+.pointer_container rect {
+	opacity: 0;
+}
+
+.pointer_container .selected {
+	opacity: 1;
+	fill: none;
+	stroke: red;
+	stroke-width: .3px;
+}
+
+
+/*button {
+    display: inline-block;
+}*/

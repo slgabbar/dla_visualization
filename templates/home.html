@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+<head>
+	<title>Spectra Visualization</title>
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<h1>Spectra Visualization with D3.js and Flask</h1>
+
+</head>
+
+<body>
+	<h3>Steps to use tool:</h3>
+	<ul>
+		<li>Use lower plot to 'pan' over the section of spectra you want to analyze.</li>
+		<li>Use the layer 'drop-down' menu to select the layer you want to visualize.</li>
+		<li>Click "create activations" to create the activations for the spectra input</li>
+		<li>Use your mouse to pan over the input and view highest feature activations!</li>
+		<li>NOTE: If the view rectangle is green, this means the model has identified a DLA in the input.</li>
+	</ul>
+
+	<div>
+		<form>
+			<select id="layers">
+				<option value = "conv1">conv1</option>
+				<option value = "conv1_relu">conv1_relu</option>
+				<option value = "pool1">pool1</option>
+				<option value = "conv2">conv2</option>
+				<option value = "conv2_relu">conv2_relu</option>
+				<option value = "pool2">pool2</option>
+				<option value = "conv3">conv3</option>
+				<option value = "conv3_relu">conv3_relu</option>
+				<option value = "pool3">pool3</option>
+			</select>
+		</form>
+		<button onclick="createActs()">Create Activations</button>
+	</div>
+
+	<svg width="960" height="500"></svg>
+	<svg width="1000" height="500" id="spritesvg"></svg>
+
+	<script type="text/javascript">
+		flux_data = {{data.chart_data|safe}}
+	</script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/spectra.js') }}"></script>
+
+</body> 
+
+
+</html> 
