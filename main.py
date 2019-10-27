@@ -32,9 +32,11 @@ def home():
 def worker():
     data = request.get_json()
     layer = data.pop()
-    acts = run_acts(data, layer)
+    acts, dla = run_acts(data, layer)
     dict = {}
     dict['act_dictionary'] = acts
+    dict['dla'] = dla
+    # print(dict)
     j = json.dumps(dict)
     return j
 
@@ -82,7 +84,21 @@ def run_acts(data, layer):
         acts = acts.reshape(3, 96)
 
     best_acts = [[{"n": float(n), "v": float(act_vec[n])} for n in np.argsort(-act_vec)[:4]] for act_vec in acts]
-    return best_acts
+    dla = check_dla(input)
+
+    return best_acts, dla
+
+
+def check_dla(input):
+    with tf.Graph().as_default(), tf.Session() as sess:
+        t_input = tf.placeholder(tf.float32, shape=[1, 400, 1, 1])
+        T = render.import_model(model, t_input, t_input)
+        acts = T('y_nn_classifer').eval(feed_dict={t_input: input, 'import/keep_prob:0': .98})[0]
+
+        if acts > 0:
+            return True
+        else:
+            return False
 
 
 if __name__ == "__main__":

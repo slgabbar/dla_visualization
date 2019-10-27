@@ -5,6 +5,7 @@ $.ajaxSetup({
 var current_act_array;
 var spritemap_url;
 var LAYER;
+var DLA_PRESENT;
 
 // flux_data has all the csv from the spectra
 var global_start;
@@ -198,17 +199,23 @@ function createActs() {
 
       pointer.selectAll('rect')
           .attr('class', 'unselected');
-
-      d3.select(this)
+      if (DLA_PRESENT) {
+        d3.select(this)
+        .attr("class", "selected")
+        .attr("style", "stroke:green");
+      } else {
+        d3.select(this)
         .attr("class", "selected");
-//        .attr("style", "stroke:green");
+      }
     });
 }
 
 function load_activations(str) {
     var json_dict = JSON.parse(str);
     current_act_array = json_dict['act_dictionary'];
+    DLA_PRESENT = json_dict['dla'];
     spritemap_url = "https://storage.googleapis.com/dla_spritemaps/1d_spritemaps/" + LAYER + "/" + LAYER + '_'
+
 }
 
 function update_sprites(mouse_pos) {
@@ -217,11 +224,11 @@ function update_sprites(mouse_pos) {
 
     channel_n = mouse_pos;
     current_sprites = current_act_array[channel_n];
-
-    sprite1 = current_sprites[0]
-    sprite2 = current_sprites[1]
-    sprite3 = current_sprites[2]
-    sprite4 = current_sprites[3]
+//    console.log(current_sprites);
+    sprite1 = current_sprites[0];
+    sprite2 = current_sprites[1];
+    sprite3 = current_sprites[2];
+    sprite4 = current_sprites[3];
 
     s1_url = spritemap_url + sprite1['n'].toString() + '.png';
     s2_url = spritemap_url + sprite2['n'].toString() + '.png';
@@ -234,15 +241,15 @@ function update_sprites(mouse_pos) {
         .attr("width", 210).attr("height", 157);
 
     sprite.append("svg:image").attr("xlink:href", s2_url)
-        .attr("x", 210).attr("y", 343)
+        .attr("x", 220).attr("y", 343)
         .attr("width", 210).attr("height", 157);
 
     sprite.append("svg:image").attr("xlink:href", s3_url)
-        .attr("x", 420).attr("y", 343)
+        .attr("x", 440).attr("y", 343)
         .attr("width", 210).attr("height", 157);
 
     sprite.append("svg:image").attr("xlink:href", s4_url)
-        .attr("x", 630).attr("y", 343)
+        .attr("x", 660).attr("y", 343)
         .attr("width", 210).attr("height", 157);
 
 }
