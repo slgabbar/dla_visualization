@@ -22,7 +22,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    df = pd.read_csv('data/flux.csv')
+    df = pd.read_csv('data/test.csv')
     chart_data = df.to_dict(orient='records')
     chart_data = json.dumps(chart_data, indent=2)
     data = {"chart_data": chart_data}
@@ -67,6 +67,7 @@ model = DLA()
 
 def run_acts(data, layer):
     input = get_input(data)
+    # print(input)
     with tf.Graph().as_default(), tf.Session() as sess:
         t_input = tf.placeholder(tf.float32, shape=[1, 400, 1, 1])
         T = render.import_model(model, t_input, t_input)

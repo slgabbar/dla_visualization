@@ -160,8 +160,9 @@ function createActs() {
     LAYER = e.options[e.selectedIndex].value;
     input = slice_array(flux_data, global_start);
     input.push(LAYER);
-    json_input = JSON.stringify(input)
+    json_input = JSON.stringify(input);
 
+    console.log(LAYER);
     $.post("model_input", json_input, function(response){
         load_activations(response);
     });
@@ -186,6 +187,10 @@ function createActs() {
     .attr("x", function(d) { return d; })
     .attr("width", w)
     .attr("height", 55)
+//    .attr("style", function(d) {
+//        if (DLA_PRESENT) { return 'stroke:green';}
+//        else {return 'stroke:red'; }
+//    })
     .attr("class", function(d) {
       if (d == x_pos) {
         return "selected";
@@ -194,7 +199,7 @@ function createActs() {
     })
     .on("mouseover", function(d) {
 
-      current_channel_pos = d/r;
+      current_channel_pos = Math.floor(d/r);
       update_sprites(current_channel_pos);
 
       pointer.selectAll('rect')
@@ -215,7 +220,14 @@ function load_activations(str) {
     current_act_array = json_dict['act_dictionary'];
     DLA_PRESENT = json_dict['dla'];
     spritemap_url = "https://storage.googleapis.com/dla_spritemaps/1d_spritemaps/" + LAYER + "/" + LAYER + '_'
-
+    update_sprites(0);
+    var style_color;
+    if (DLA_PRESENT) {
+        style_color = "stroke:green";
+    }else {
+        style_color = "stroke:red";
+    }
+    d3.select(".selected").attr("style", style_color);
 }
 
 function update_sprites(mouse_pos) {
@@ -224,7 +236,6 @@ function update_sprites(mouse_pos) {
 
     channel_n = mouse_pos;
     current_sprites = current_act_array[channel_n];
-//    console.log(current_sprites);
     sprite1 = current_sprites[0];
     sprite2 = current_sprites[1];
     sprite3 = current_sprites[2];
