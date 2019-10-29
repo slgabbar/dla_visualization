@@ -221,7 +221,7 @@ function load_activations(str) {
     DLA_PRESENT = json_dict['dla'];
     spritemap_url = "https://storage.googleapis.com/dla_spritemaps/1d_spritemaps/" + LAYER + "/" + LAYER + '_'
     update_sprites(0);
-    display_spritemap(spritemap_url);
+    display_spritemap(spritemap_url, LAYER);
     var style_color;
     if (DLA_PRESENT) {
         style_color = "stroke:green";
@@ -285,7 +285,23 @@ function update_sprites(mouse_pos) {
 }
 
 
-function display_spritemap(s_url) {
+function display_spritemap(s_url, layer) {
+    var num_rows;
+    var num_cols;
+    var x_factor;
+    var y_factor;
+    if (layer == 'conv1' || layer == 'conv1_relu' || layer == 'pool1') {
+        num_rows = 10;
+        num_cols = 10;
+        x_factor = 100;
+        y_factor = 50;
+    } else {
+        num_rows = 8;
+        num_cols = 12;
+        x_factor = 83.333333;
+        y_factor = 62.5;
+    }
+
     var sprite = d3.select("#fullmap");
     sprite.selectAll("*").remove();
 
@@ -293,19 +309,19 @@ function display_spritemap(s_url) {
     d3.select("#fullmap")
         .append("svg:image")
         .attr("xlink:href", new_url)
-        .attr("width", '1000px').attr("height", '500px')
+        .attr("width", '100%').attr("height", '100%')
+        .attr("preserveAspectRatio", "none")
         .attr("x", 0).attr("y",0);
 
     var xys = []
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 10; j++) {
-            y = i * 50;
-            x = j * 100;
+    for (i = 0; i < num_rows; i++) {
+        for (j = 0; j < num_cols; j++) {
+            y = i * y_factor;
+            x = j * x_factor;
             data_point = [y, x];
             xys.push(data_point);
         }
     }
-//    var xys = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 
     var test = d3.select("#fullmap");
     test.selectAll('rect')
@@ -313,38 +329,9 @@ function display_spritemap(s_url) {
         .enter()
         .append('rect')
         .attr("class", "s_rect")
-        .attr("height", 50).attr("width", 100)
+        .attr("height", y_factor).attr("width", x_factor)
         .attr("y", 0)
         .attr("x", function(d) { return d[1]; })
         .attr("y", function(d) { return d[0]; });
-
-
-//    d3.select("#fullmap")
-//        .data(xys)
-//        .enter()
-//        .append("svg:image")
-//        .attr("x", function(d) {
-//            return d[1];
-//        })
-//        .attr("y", function(d) {
-//            return d[0];
-//        })
-//        .attr("xlink:href", function(d, i) {
-//            u = s_url + i.toString() + '.png';
-//            return u;
-//        })
-//        .attr("width", 105).attr("height", 75);
-
-//    sprite.append("svg:image")
-//        .attr("xlink:href", u)
-//        .attr("x", 0)
-//        .attr("y", 0)
-//        .attr("width", 105)
-//        .attr("height", 75);
-//    sprite.append("rect")
-//        .attr("class", "s_rect")
-//        .attr("width", 105).attr("height", 75)
-//        .attr("x", 0).attr("y", 0);
-
 }
 
