@@ -138,7 +138,7 @@ function slice_array(data, start) {
   return new_data;
 };
 
-function range(n, r) {
+function range(n) {
   return Array(n).fill().map((_, i) => i*r);
 }
 
@@ -249,11 +249,13 @@ function update_sprites(mouse_pos) {
 
     denom = 150;
     s1_val = 157*(sprite1['v']/denom);
+    if (s1_val < 0) {return 0;}
     s2_val = 157*(sprite2['v']/denom);
+    if (s2_val < 0) {return 0;}
     s3_val = 157*(sprite3['v']/denom);
+    if (s3_val < 0) {return 0;}
     s4_val = 157*(sprite4['v']/denom);
-//    console.log(s1_val, s2_val, s3_val, s4_val);
-
+    if (s4_val < 0) {return 0;}
 
     var t1 = d3.select(".dict").append("div")
         .attr("class", "entry");
@@ -316,9 +318,9 @@ function display_spritemap(s_url, layer) {
     var xys = []
     for (i = 0; i < num_rows; i++) {
         for (j = 0; j < num_cols; j++) {
-            y = i * y_factor;
-            x = j * x_factor;
-            data_point = [y, x];
+            var tmp_y = i * y_factor;
+            var tmp_x = j * x_factor;
+            data_point = [tmp_y, tmp_x];
             xys.push(data_point);
         }
     }
@@ -332,6 +334,7 @@ function display_spritemap(s_url, layer) {
         .attr("height", y_factor).attr("width", x_factor)
         .attr("y", 0)
         .attr("x", function(d) { return d[1]; })
-        .attr("y", function(d) { return d[0]; });
+        .attr("y", function(d) { return d[0]; })
+        .attr("style", "stroke: red");
 }
 

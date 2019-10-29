@@ -51,8 +51,7 @@
 }
 
 .s_rect {
-    stroke: green;
-    stroke-width: 1px;
+    stroke-width: 4px;
     fill: none;
 }
 
