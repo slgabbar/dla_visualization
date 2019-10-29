@@ -107,7 +107,7 @@ function drawPlot(data) {
 
 function brushed() {
   // WHen brush is moved, delete ability to look over sprites.
-  d3.select("#spritesvg").selectAll("*").remove();
+  d3.select("#spritediv").selectAll("*").remove();
   pointer.selectAll("rect").remove();
 
   // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
@@ -138,7 +138,7 @@ function slice_array(data, start) {
   return new_data;
 };
 
-function range(n) {
+function range(n, r) {
   return Array(n).fill().map((_, i) => i*r);
 }
 
@@ -177,7 +177,7 @@ function createActs() {
     w = layer_dims[1];
     r = layer_dims[2];
 
-    var xs = range(n),
+    var xs = range(n, r),
     x_pos = 0;
 
     pointer.selectAll('rect')
@@ -221,6 +221,7 @@ function load_activations(str) {
     DLA_PRESENT = json_dict['dla'];
     spritemap_url = "https://storage.googleapis.com/dla_spritemaps/1d_spritemaps/" + LAYER + "/" + LAYER + '_'
     update_sprites(0);
+    display_spritemap(spritemap_url);
     var style_color;
     if (DLA_PRESENT) {
         style_color = "stroke:green";
@@ -231,7 +232,7 @@ function load_activations(str) {
 }
 
 function update_sprites(mouse_pos) {
-    var sprite = d3.select("#spritesvg");
+    var sprite = d3.select("#spritediv");
     sprite.selectAll("*").remove();
 
     channel_n = mouse_pos;
@@ -246,21 +247,104 @@ function update_sprites(mouse_pos) {
     s3_url = spritemap_url + sprite3['n'].toString() + '.png';
     s4_url = spritemap_url + sprite4['n'].toString() + '.png';
 
+    denom = 150;
+    s1_val = 157*(sprite1['v']/denom);
+    s2_val = 157*(sprite2['v']/denom);
+    s3_val = 157*(sprite3['v']/denom);
+    s4_val = 157*(sprite4['v']/denom);
+//    console.log(s1_val, s2_val, s3_val, s4_val);
 
-    sprite.append("svg:image").attr("xlink:href", s1_url)
-        .attr("x", 0).attr("y", 343)
-        .attr("width", 210).attr("height", 157);
 
-    sprite.append("svg:image").attr("xlink:href", s2_url)
-        .attr("x", 220).attr("y", 343)
-        .attr("width", 210).attr("height", 157);
+    var t1 = d3.select(".dict").append("div")
+        .attr("class", "entry");
+    var s1 = t1.append("div").attr("class", "sprite")
+        .attr("style", "background-image: url(" + s1_url + ")");
+    var v1 = t1.append("div").attr("class", "value")
+        .attr("style", "height: " + s1_val + "px");
 
-    sprite.append("svg:image").attr("xlink:href", s3_url)
-        .attr("x", 440).attr("y", 343)
-        .attr("width", 210).attr("height", 157);
+    var t2 = d3.select(".dict").append("div")
+        .attr("class", "entry");
+    var s2 = t2.append("div").attr("class", "sprite")
+        .attr("style", "background-image: url(" + s2_url + ")");
+    var v2 = t2.append("div").attr("class", "value")
+        .attr("style", "height: " + s2_val + "px");
 
-    sprite.append("svg:image").attr("xlink:href", s4_url)
-        .attr("x", 660).attr("y", 343)
-        .attr("width", 210).attr("height", 157);
+    var t3 = d3.select(".dict").append("div")
+        .attr("class", "entry");
+    var s3 = t3.append("div").attr("class", "sprite")
+        .attr("style", "background-image: url(" + s3_url + ")");
+    var v3 = t3.append("div").attr("class", "value")
+        .attr("style", "height: " + s3_val + "px");
+
+    var t4 = d3.select(".dict").append("div")
+        .attr("class", "entry");
+    var s4 = t4.append("div").attr("class", "sprite")
+        .attr("style", "background-image: url(" + s4_url + ")");
+    var v4 = t4.append("div").attr("class", "value")
+        .attr("style", "height: " + s4_val + "px");
+}
+
+
+function display_spritemap(s_url) {
+    var sprite = d3.select("#fullmap");
+    sprite.selectAll("*").remove();
+
+    new_url = s_url.slice(0, -1) + '.png'
+    d3.select("#fullmap")
+        .append("svg:image")
+        .attr("xlink:href", new_url)
+        .attr("width", '1000px').attr("height", '500px')
+        .attr("x", 0).attr("y",0);
+
+    var xys = []
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            y = i * 50;
+            x = j * 100;
+            data_point = [y, x];
+            xys.push(data_point);
+        }
+    }
+//    var xys = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+    var test = d3.select("#fullmap");
+    test.selectAll('rect')
+        .data(xys)
+        .enter()
+        .append('rect')
+        .attr("class", "s_rect")
+        .attr("height", 50).attr("width", 100)
+        .attr("y", 0)
+        .attr("x", function(d) { return d[1]; })
+        .attr("y", function(d) { return d[0]; });
+
+
+//    d3.select("#fullmap")
+//        .data(xys)
+//        .enter()
+//        .append("svg:image")
+//        .attr("x", function(d) {
+//            return d[1];
+//        })
+//        .attr("y", function(d) {
+//            return d[0];
+//        })
+//        .attr("xlink:href", function(d, i) {
+//            u = s_url + i.toString() + '.png';
+//            return u;
+//        })
+//        .attr("width", 105).attr("height", 75);
+
+//    sprite.append("svg:image")
+//        .attr("xlink:href", u)
+//        .attr("x", 0)
+//        .attr("y", 0)
+//        .attr("width", 105)
+//        .attr("height", 75);
+//    sprite.append("rect")
+//        .attr("class", "s_rect")
+//        .attr("width", 105).attr("height", 75)
+//        .attr("x", 0).attr("y", 0);
 
 }
+

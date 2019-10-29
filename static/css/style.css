@@ -16,6 +16,43 @@
 	stroke-width: .3px;
 }
 
-/*button {
+.dict {
+    height: 128px;
     display: inline-block;
-}*/
+    vertical-align: bottom;
+    padding-bottom: 64px;
+    margin-left: 64px;
+}
+
+.entry {
+    margin-top: 9px;
+    margin-right: 32px;
+    display: inline-block;
+}
+
+.value {
+    display: inline-block;
+    width: 32px;
+    border-radius: 8px;
+    background: #777;
+}
+.sprite {
+    display: inline-block;
+    width: 210px;
+    height: 157px;
+    border-radius: 8px;
+}
+
+.smap {
+    height: 128px;
+    vertical-align: bottom;
+    padding-bottom: 64px;
+    margin-left: 64px;
+}
+
+.s_rect {
+    stroke: green;
+    stroke-width: 1px;
+    fill: none;
+}
+
