@@ -32,11 +32,15 @@ def home():
 def worker():
     data = request.get_json()
     layer = data.pop()
-    acts, dla = run_acts(data, layer)
+
+    best_acts, dla, acts = run_acts(data, layer)
+
+    avg_channel_acts = get_avg_features(acts)
+
     dict = {}
-    dict['act_dictionary'] = acts
+    dict['act_dictionary'] = best_acts
     dict['dla'] = dla
-    # print(dict)
+    dict['avg_acts'] = avg_channel_acts
     j = json.dumps(dict)
     return j
 
@@ -87,7 +91,7 @@ def run_acts(data, layer):
     best_acts = [[{"n": float(n), "v": float(act_vec[n])} for n in np.argsort(-act_vec)[:4]] for act_vec in acts]
     dla = check_dla(input)
 
-    return best_acts, dla
+    return best_acts, dla, acts
 
 
 def check_dla(input):
@@ -100,6 +104,38 @@ def check_dla(input):
             return True
         else:
             return False
+
+def get_avg_features(acts):
+    num_channels = len(acts)
+    num_features = len(acts[0])
+    t = np.zeros(num_features)
+    for i in range(num_channels):
+        for j in range(num_features):
+            act_val = acts[i][j]
+            t[j] += act_val
+
+    scaled = scale_avg_features(t)
+    return scaled
+
+def scale_avg_features(avg_f):
+    """
+        Scales pos and negative activations differently
+    """
+    p_max = max(avg_f)
+
+    n_min = min(avg_f)
+    n_max = 0
+    scaled = []
+    for val in avg_f:
+        if val >= 0:
+            new_val = ((val/p_max) * (-60)) + 100
+            scaled.append(new_val)
+        else:
+            new_val = (((val-n_min) / (n_max-n_min)) * 60) + 40
+            new_val *= -1
+            scaled.append(new_val)
+    return scaled
+
 
 
 if __name__ == "__main__":

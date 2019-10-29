@@ -110,6 +110,10 @@ function brushed() {
   d3.select("#spritediv").selectAll("*").remove();
   pointer.selectAll("rect").remove();
 
+  d3.select("#fullmap").selectAll("rect")
+        .attr("style", "stroke: hsl(120, 100%, 100%)")
+
+
   // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
   var s = d3.event.selection || x2.range();
 
@@ -219,9 +223,10 @@ function load_activations(str) {
     var json_dict = JSON.parse(str);
     current_act_array = json_dict['act_dictionary'];
     DLA_PRESENT = json_dict['dla'];
+    avg_acts = json_dict['avg_acts']
     spritemap_url = "https://storage.googleapis.com/dla_spritemaps/1d_spritemaps/" + LAYER + "/" + LAYER + '_'
     update_sprites(0);
-    display_spritemap(spritemap_url, LAYER);
+    display_spritemap(spritemap_url, LAYER, avg_acts);
     var style_color;
     if (DLA_PRESENT) {
         style_color = "stroke:green";
@@ -287,7 +292,7 @@ function update_sprites(mouse_pos) {
 }
 
 
-function display_spritemap(s_url, layer) {
+function display_spritemap(s_url, layer, avg_acts) {
     var num_rows;
     var num_cols;
     var x_factor;
@@ -316,12 +321,15 @@ function display_spritemap(s_url, layer) {
         .attr("x", 0).attr("y",0);
 
     var xys = []
+    count = 0
     for (i = 0; i < num_rows; i++) {
         for (j = 0; j < num_cols; j++) {
             var tmp_y = i * y_factor;
             var tmp_x = j * x_factor;
-            data_point = [tmp_y, tmp_x];
+            var c = avg_acts[count];
+            data_point = [tmp_y, tmp_x, c];
             xys.push(data_point);
+            count += 1;
         }
     }
 
@@ -335,6 +343,27 @@ function display_spritemap(s_url, layer) {
         .attr("y", 0)
         .attr("x", function(d) { return d[1]; })
         .attr("y", function(d) { return d[0]; })
-        .attr("style", "stroke: red");
-}
+        .attr("style", function(d, i) {
+            if (d[2] >= 0) {
+                p_floor = Math.floor(d[2]);
+                p_str = p_floor.toString() + "%)";
+                return "stroke: hsl(100, 100%, " + p_str;
+            }else {
+                p_pos = d[2] * -1;
+                p_floor = Math.floor(p_pos);
+                p_str = p_floor.toString() + "%)";
+                return "stroke: hsl(0, 100%, " + p_str;
+            }
+        });
 
+//    test.selectAll("rect")
+//        .data(avg_acts)
+//        .enter()
+//        .attr("style", function(d) {
+//            if (d > 0) {
+//                return "stroke: hsl(100, 100%, 40%"
+//            } else {
+//                return "stroke: hsl(0, 100%, 40%"
+//            }
+//        });
+}
