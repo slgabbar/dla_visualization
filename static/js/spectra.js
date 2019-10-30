@@ -297,22 +297,34 @@ function display_spritemap(s_url, layer, avg_acts) {
     var num_cols;
     var x_factor;
     var y_factor;
+    var width;
+    var height;
+    var x_start;
+    var y_start;
     if (layer == 'conv1' || layer == 'conv1_relu' || layer == 'pool1') {
         num_rows = 10;
         num_cols = 10;
-        x_factor = 100;
-        y_factor = 50;
+        x_factor = 116;
+        y_factor = 51.4;
+        width = 100;
+        height = 41.4;
+        x_start = 8;
+        y_start = 5;
     } else {
         num_rows = 8;
         num_cols = 12;
-        x_factor = 83.333333;
-        y_factor = 62.5;
+        x_factor = 96.66666666666;
+        y_factor = 64.25;
+        width = 83.3333333333;
+        height = 51.75;
+        x_start = 6.66666666666;
+        y_start = 6.25;
     }
 
     var sprite = d3.select("#fullmap");
     sprite.selectAll("*").remove();
 
-    new_url = s_url.slice(0, -1) + '.png'
+    new_url = s_url.slice(0, -1) + '_resized.png'
     d3.select("#fullmap")
         .append("svg:image")
         .attr("xlink:href", new_url)
@@ -324,8 +336,8 @@ function display_spritemap(s_url, layer, avg_acts) {
     count = 0
     for (i = 0; i < num_rows; i++) {
         for (j = 0; j < num_cols; j++) {
-            var tmp_y = i * y_factor;
-            var tmp_x = j * x_factor;
+            var tmp_y = i * y_factor + y_start;
+            var tmp_x = j * x_factor + x_start;
             var c = avg_acts[count];
             data_point = [tmp_y, tmp_x, c];
             xys.push(data_point);
@@ -333,18 +345,19 @@ function display_spritemap(s_url, layer, avg_acts) {
         }
     }
 
+    console.log(xys)
     var test = d3.select("#fullmap");
     test.selectAll('rect')
         .data(xys)
         .enter()
         .append('rect')
         .attr("class", "s_rect")
-        .attr("height", y_factor).attr("width", x_factor)
+        .attr("height", height).attr("width", width)
         .attr("y", 0)
         .attr("x", function(d) { return d[1]; })
         .attr("y", function(d) { return d[0]; })
         .attr("style", function(d, i) {
-            if (d[2] >= 0) {
+            if (d[2] >0) {
                 p_floor = Math.floor(d[2]);
                 p_str = p_floor.toString() + "%)";
                 return "stroke: hsl(100, 100%, " + p_str;
@@ -356,14 +369,4 @@ function display_spritemap(s_url, layer, avg_acts) {
             }
         });
 
-//    test.selectAll("rect")
-//        .data(avg_acts)
-//        .enter()
-//        .attr("style", function(d) {
-//            if (d > 0) {
-//                return "stroke: hsl(100, 100%, 40%"
-//            } else {
-//                return "stroke: hsl(0, 100%, 40%"
-//            }
-//        });
 }

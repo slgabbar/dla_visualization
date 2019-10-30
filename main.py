@@ -122,16 +122,20 @@ def scale_avg_features(avg_f):
         Scales pos and negative activations differently
     """
     p_max = max(avg_f)
+    p_new_max = 40          # Dark Green
+    p_new_min = 80         # White
 
     n_min = min(avg_f)
     n_max = 0
+    n_new_max = 80         # White
+    n_new_min = 40          # Dark Red
     scaled = []
     for val in avg_f:
         if val >= 0:
-            new_val = ((val/p_max) * (-60)) + 100
+            new_val = ((val/p_max) * (p_new_max-p_new_min)) + p_new_min
             scaled.append(new_val)
         else:
-            new_val = (((val-n_min) / (n_max-n_min)) * 60) + 40
+            new_val = (((val-n_min) / (n_max-n_min)) * (n_new_max-n_new_min)) + n_new_min
             new_val *= -1
             scaled.append(new_val)
     return scaled
