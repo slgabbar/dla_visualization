@@ -1,13 +1,25 @@
+// define the content type for all ajax requests
 $.ajaxSetup({
   contentType: "application/json; charset=utf-8"
 });
 
+
+/*
+* Define global variables
+* current_act_array - holds the current activation values
+* spritempa_url - url for the location of the spritemap
+* LAYER - current layer of interest
+* DLA_PRESENT - boolean to check if DLA in current 400 width window
+*/
 var current_act_array;
 var spritemap_url;
 var LAYER;
 var DLA_PRESENT;
 
-// flux_data has all the csv from the spectra
+// flux data for the  graph
+var flux_data;
+
+// start of the data being displayed
 var global_start;
 
 
@@ -32,36 +44,39 @@ var brush = d3.brushX()
     .extent([[0, 0], [width, height2]])
     .on("brush end", brushed);
 
-var line = d3.line()
-    .x(function(d) { return x(d.wave); })
-    .y(function(d) { return y(d.flux); });
-
-var line2 = d3.line()
-    .x(function(d) { return x2(d.wave); })
-    .y(function(d) { return y2(d.flux); });
-
-svg.append("defs").append("clipPath")
-    .attr("id", "clip")
-    .append("rect")
-    .attr("width", width)
-    .attr("height", height);
-
-var focus = svg.append("g")
-    .attr("class", "focus")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var pointer = focus.append("svg")
-    .attr("class", "pointer_container")
-    // .attr("viewBox", "0, 36.7, 143, 1");
-    .attr("viewBox", "0, 36.7, 143, 1");
-
-
-var context = svg.append("g")
-    .attr("class", "context")
-    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+var focus;
+var context;
+var pointer;
+var line;
+var line2;
 
 
 function drawPlot(data) {
+    line = d3.line()
+        .x(function(d) { return x(d.wave); })
+        .y(function(d) { return y(d.flux); });
+
+    line2 = d3.line()
+        .x(function(d) { return x2(d.wave); })
+        .y(function(d) { return y2(d.flux); });
+
+    svg.append("defs").append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
+
+    focus = svg.append("g")
+        .attr("class", "focus")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    pointer = focus.append("svg")
+        .attr("class", "pointer_container")
+        .attr("viewBox", "0, 36.7, 143, 1");
+
+    context = svg.append("g")
+        .attr("class", "context")
+        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
     data.forEach(function(d) {
         d.wave = +d.wave;
@@ -110,8 +125,8 @@ function brushed() {
   d3.select("#spritediv").selectAll("*").remove();
   pointer.selectAll("rect").remove();
 
-  d3.select("#fullmap").selectAll("rect")
-        .attr("style", "stroke: hsl(120, 100%, 100%)")
+//  d3.select("#fullmap").selectAll("rect")
+//        .attr("style", "stroke: hsl(120, 100%, 100%)")
 
 
   // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
@@ -134,9 +149,6 @@ function brushed() {
 
 }
 
-drawPlot(flux_data);
-
-
 function slice_array(data, start) {
   new_data = data.slice(start, start+400);
   return new_data;
@@ -158,10 +170,31 @@ function num_channels(layer) {
   }
 }
 
+function loadData() {
+    var e = document.getElementById('flux_data');
+    flux = e.options[e.selectedIndex].value;
+    flux = flux + '.npy'
+    json_input = JSON.stringify(flux);
+
+    $.post("plot_flux", json_input, function(response){
+        plot_response(response);
+    });
+    event.preventDefault();
+}
+
+
+function plot_response(r) {
+    svg.selectAll("*").remove();
+    var flux_dict = JSON.parse(r);
+    flux_data = flux_dict;
+    drawPlot(flux_data);
+}
+
 
 function createActs() {
     var e = document.getElementById('layers');
     LAYER = e.options[e.selectedIndex].value;
+
     input = slice_array(flux_data, global_start);
     input.push(LAYER);
     json_input = JSON.stringify(input);
@@ -191,10 +224,6 @@ function createActs() {
     .attr("x", function(d) { return d; })
     .attr("width", w)
     .attr("height", 55)
-//    .attr("style", function(d) {
-//        if (DLA_PRESENT) { return 'stroke:green';}
-//        else {return 'stroke:red'; }
-//    })
     .attr("class", function(d) {
       if (d == x_pos) {
         return "selected";
@@ -345,7 +374,6 @@ function display_spritemap(s_url, layer, avg_acts) {
         }
     }
 
-    console.log(xys)
     var test = d3.select("#fullmap");
     test.selectAll('rect')
         .data(xys)

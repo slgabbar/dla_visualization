@@ -22,11 +22,23 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    df = pd.read_csv('data/test.csv')
-    chart_data = df.to_dict(orient='records')
-    chart_data = json.dumps(chart_data, indent=2)
-    data = {"chart_data": chart_data}
-    return render_template("home.html", data=data)
+    return render_template("home.html", data=None)
+
+@app.route("/plot_flux", methods=['POST'])
+def plot_flux():
+    data_str = request.get_json()
+    infile = 'data/' + data_str
+    data = np.load(infile)
+    count = 0
+    arr = []
+    for f in data:
+        vals = {}
+        vals['wave']=count
+        vals['flux']=f.item()
+        arr.append(vals)
+        count += 1
+    flux_data = json.dumps(arr)
+    return flux_data
 
 @app.route("/model_input", methods=['POST'])
 def worker():
@@ -123,11 +135,11 @@ def scale_avg_features(avg_f):
     """
     p_max = max(avg_f)
     p_new_max = 40          # Dark Green
-    p_new_min = 80         # White
+    p_new_min = 100         # White
 
     n_min = min(avg_f)
     n_max = 0
-    n_new_max = 80         # White
+    n_new_max = 100         # White
     n_new_min = 40          # Dark Red
     scaled = []
     for val in avg_f:
