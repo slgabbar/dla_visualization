@@ -47,12 +47,15 @@ def worker():
 
     best_acts, dla, acts = run_acts(data, layer)
 
+    act_amounts = get_act_amount(acts)
+
     avg_channel_acts = get_avg_features(acts)
 
     dict = {}
     dict['act_dictionary'] = best_acts
     dict['dla'] = dla
     dict['avg_acts'] = avg_channel_acts
+    dict['act_amounts'] = act_amounts
     j = json.dumps(dict)
     return j
 
@@ -153,6 +156,16 @@ def scale_avg_features(avg_f):
     return scaled
 
 
+def get_act_amount(acts):
+    max_acts = []
+    for i in range(len(acts)):
+        m = max(acts[i])
+        vals = {}
+        vals['channel'] = i
+        vals['act_amount'] = m.item()
+        max_acts.append(vals)
+    # result = json.dumps(max_acts)
+    return max_acts
 
 if __name__ == "__main__":
     app.run(debug=True)

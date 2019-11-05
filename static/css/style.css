@@ -5,6 +5,14 @@
 	clip-path: url(#clip);
 }
 
+.act_line {
+    stroke: black;
+    fill: none;
+    stroke-width: 2px;
+}
+
+
+
 .pointer_container rect {
 	opacity: 0;
 }

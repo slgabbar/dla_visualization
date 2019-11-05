@@ -44,6 +44,8 @@ var brush = d3.brushX()
     .extent([[0, 0], [width, height2]])
     .on("brush end", brushed);
 
+
+// Define some global variables for the main plot!!!!!!
 var focus;
 var context;
 var pointer;
@@ -52,6 +54,7 @@ var line2;
 
 
 function drawPlot(data) {
+//    console.log(data);
     line = d3.line()
         .x(function(d) { return x(d.wave); })
         .y(function(d) { return y(d.flux); });
@@ -118,16 +121,74 @@ function drawPlot(data) {
         .attr("class", "brush")
         .call(brush)
         .call(brush.move, [0, 78.2]);
-        };
+        }
+
+
+
+function plotActivation(data) {
+    // set the dimensions and margins of the graph
+    var act_svg = d3.select("#act_plot"),
+        act_margin = {top: 20, right: 20, bottom: 110, left: 40},
+        act_width = +act_svg.attr("width") - act_margin.left - act_margin.right,
+        act_height = +act_svg.attr("height") - act_margin.top - act_margin.bottom;
+
+    // set the ranges
+    var x = d3.scaleLinear().range([0, act_width]),
+        y = d3.scaleLinear().range([act_height, 0]);
+
+    // define the axis's
+    var xAxis = d3.axisBottom(x),
+        yAxis = d3.axisLeft(y);
+
+    // define the line
+    var actline = d3.line()
+        .x(function(d) { return x(d.channel); })
+        .y(function(d) {return y(d.act_amount); });
+
+
+    act_focus = act_svg.append("g")
+        .attr("class", "focus")
+        .attr("transform", "translate(" + act_margin.left + "," + act_margin.top + ")");
+
+    // append group element to the svg
+    // moves group element to top left margin
+    act_focus.append("g")
+        .attr("transform",
+              "translate(" + act_margin.left + "," + act_margin.top + ")");
+
+    //  get the data
+    data.forEach(function(d) {
+        d.channel = +d.channel;
+        d.act_amount = +d.act_amount;
+    });
+
+    // scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.channel; }));
+    y.domain([d3.min(data, function(d) { return d.act_amount; }), d3.max(data, function(d) { return d.act_amount; })]);
+
+    // add the actline path
+    act_focus.append('path')
+        .datum(data)
+        .attr("class", "line")
+        .attr("d", actline);
+
+    act_focus.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + act_height + ")")
+        .call(xAxis);
+
+    act_focus.append("g")
+        .attr("class", "axis axis--y")
+        .call(yAxis);
+}
 
 function brushed() {
   // WHen brush is moved, delete ability to look over sprites.
   d3.select("#spritediv").selectAll("*").remove();
   pointer.selectAll("rect").remove();
 
-//  d3.select("#fullmap").selectAll("rect")
-//        .attr("style", "stroke: hsl(120, 100%, 100%)")
-
+  // also remove the activation plot
+  d3.select("#act_plot").selectAll("*").remove();
 
   // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
   var s = d3.event.selection || x2.range();
@@ -182,7 +243,6 @@ function loadData() {
     event.preventDefault();
 }
 
-
 function plot_response(r) {
     svg.selectAll("*").remove();
     var flux_dict = JSON.parse(r);
@@ -190,21 +250,25 @@ function plot_response(r) {
     drawPlot(flux_data);
 }
 
-
 function createActs() {
+    // Get the current layer from HTML page
     var e = document.getElementById('layers');
     LAYER = e.options[e.selectedIndex].value;
 
+    // slice the spectar data into 400 length input
+    // jsonify the input
     input = slice_array(flux_data, global_start);
     input.push(LAYER);
     json_input = JSON.stringify(input);
 
-    console.log(LAYER);
+    // send model input to main.py
+    // load_activatrions from response data
     $.post("model_input", json_input, function(response){
         load_activations(response);
     });
     event.preventDefault();
 
+    // Remove all old srpites fronm tghe display
     d3.select("#spritesvg").selectAll("*").remove();
     pointer.selectAll("rect").remove();
 
@@ -217,6 +281,8 @@ function createActs() {
     var xs = range(n, r),
     x_pos = 0;
 
+    // highlight only one rectangle based on mouse position
+    // start position is always at 0
     pointer.selectAll('rect')
     .data(xs)
     .enter()
@@ -249,13 +315,26 @@ function createActs() {
 }
 
 function load_activations(str) {
+    // parse the jscon string from main.py
     var json_dict = JSON.parse(str);
+
+    // initizlaize variables with json data
     current_act_array = json_dict['act_dictionary'];
     DLA_PRESENT = json_dict['dla'];
-    avg_acts = json_dict['avg_acts']
+    avg_acts = json_dict['avg_acts'];
+    act_amounts = json_dict['act_amounts'];
+
+    // plot the activation amount
+    plotActivation(act_amounts);
+
+    //update sprites at the start position of 0
     spritemap_url = "https://storage.googleapis.com/dla_spritemaps/1d_spritemaps/" + LAYER + "/" + LAYER + '_'
     update_sprites(0);
+
+    //display enttire spritempa with approcpriat ecolor scaling for features
     display_spritemap(spritemap_url, LAYER, avg_acts);
+
+    // set rectangle color to green if dla present
     var style_color;
     if (DLA_PRESENT) {
         style_color = "stroke:green";
@@ -319,7 +398,6 @@ function update_sprites(mouse_pos) {
     var v4 = t4.append("div").attr("class", "value")
         .attr("style", "height: " + s4_val + "px");
 }
-
 
 function display_spritemap(s_url, layer, avg_acts) {
     var num_rows;
