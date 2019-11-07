@@ -22,13 +22,12 @@ var flux_data;
 // start of the data being displayed
 var global_start;
 
-
-var svg = d3.select("svg"),
+var flux_svg = d3.select("#div1").append("svg").attr('width', 960).attr("height", 500),
     margin = {top: 20, right: 20, bottom: 110, left: 40},
     margin2 = {top: 430, right: 20, bottom: 30, left: 40},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    height2 = +svg.attr("height") - margin2.top - margin2.bottom;
+    width = +flux_svg.attr("width") - margin.left - margin.right,
+    height = +flux_svg.attr("height") - margin.top - margin.bottom,
+    height2 = +flux_svg.attr("height") - margin2.top - margin2.bottom;
 
 var x = d3.scaleLinear().range([0, width]),
     x2 = d3.scaleLinear().range([0, width]),
@@ -63,13 +62,13 @@ function drawPlot(data) {
         .x(function(d) { return x2(d.wave); })
         .y(function(d) { return y2(d.flux); });
 
-    svg.append("defs").append("clipPath")
+    flux_svg.append("defs").append("clipPath")
         .attr("id", "clip")
         .append("rect")
         .attr("width", width)
         .attr("height", height);
 
-    focus = svg.append("g")
+    focus = flux_svg.append("g")
         .attr("class", "focus")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -77,7 +76,7 @@ function drawPlot(data) {
         .attr("class", "pointer_container")
         .attr("viewBox", "0, 36.7, 143, 1");
 
-    context = svg.append("g")
+    context = flux_svg.append("g")
         .attr("class", "context")
         .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
@@ -127,7 +126,7 @@ function drawPlot(data) {
 
 function plotActivation(data) {
     // set the dimensions and margins of the graph
-    var act_svg = d3.select("#act_plot"),
+    var act_svg = d3.select("#div4").append("svg").attr("width", 960).attr("height", 500),
         act_margin = {top: 20, right: 20, bottom: 110, left: 40},
         act_width = +act_svg.attr("width") - act_margin.left - act_margin.right,
         act_height = +act_svg.attr("height") - act_margin.top - act_margin.bottom;
@@ -184,11 +183,11 @@ function plotActivation(data) {
 
 function brushed() {
   // WHen brush is moved, delete ability to look over sprites.
-  d3.select("#spritediv").selectAll("*").remove();
+  d3.select("#div2").selectAll("*").remove();
   pointer.selectAll("rect").remove();
 
   // also remove the activation plot
-  d3.select("#act_plot").selectAll("*").remove();
+  d3.select("#div4").selectAll("*").remove();
 
   // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
   var s = d3.event.selection || x2.range();
@@ -244,7 +243,7 @@ function loadData() {
 }
 
 function plot_response(r) {
-    svg.selectAll("*").remove();
+    flux_svg.selectAll("*").remove();
     var flux_dict = JSON.parse(r);
     flux_data = flux_dict;
     drawPlot(flux_data);
@@ -269,7 +268,7 @@ function createActs() {
     event.preventDefault();
 
     // Remove all old srpites fronm tghe display
-    d3.select("#spritesvg").selectAll("*").remove();
+    d3.select("#div3").selectAll("*").remove();
     pointer.selectAll("rect").remove();
 
     // Add all rectangles based on the layer
@@ -345,8 +344,9 @@ function load_activations(str) {
 }
 
 function update_sprites(mouse_pos) {
-    var sprite = d3.select("#spritediv");
-    sprite.selectAll("*").remove();
+
+    d3.select("#div2").selectAll("*").remove();
+    var sprite = d3.select("#div2").append("div").attr("class", "dict");
 
     channel_n = mouse_pos;
     current_sprites = current_act_array[channel_n];
@@ -428,16 +428,15 @@ function display_spritemap(s_url, layer, avg_acts) {
         y_start = 6.25;
     }
 
-    var sprite = d3.select("#fullmap");
-    sprite.selectAll("*").remove();
+    var sprite = d3.select("#div3").append("svg").attr("width", 1160).attr("height", 500);
+//    sprite.selectAll("*").remove();
 
     new_url = s_url.slice(0, -1) + '_resized.png'
-    d3.select("#fullmap")
-        .append("svg:image")
-        .attr("xlink:href", new_url)
-        .attr("width", '100%').attr("height", '100%')
-        .attr("preserveAspectRatio", "none")
-        .attr("x", 0).attr("y",0);
+    sprite.append("svg:image")
+          .attr("xlink:href", new_url)
+          .attr("width", '100%').attr("height", '100%')
+          .attr("preserveAspectRatio", "none")
+          .attr("x", 0).attr("y",0);
 
     var xys = []
     count = 0
@@ -452,8 +451,7 @@ function display_spritemap(s_url, layer, avg_acts) {
         }
     }
 
-    var test = d3.select("#fullmap");
-    test.selectAll('rect')
+    sprite.selectAll('rect')
         .data(xys)
         .enter()
         .append('rect')

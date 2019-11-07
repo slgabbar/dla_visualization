@@ -9,7 +9,7 @@
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 
 </head>
-
+<body>
 	<div id="spectra_select">
 		<form>
 			<select id="flux_data">
@@ -25,9 +25,7 @@
 			<button onclick="loadData()">Plot Data</button>
 		</form>
 	</div>
-
-
-	<div>
+	<div id="layer_select">
 		<form>
 			<select id="layers">
 				<option value = "conv1">conv1</option>
@@ -44,11 +42,11 @@
 		<button onclick="createActs()">Create Activations</button>
 	</div>
 
-	<svg width="960" height="500" id="main_plot"></svg>
-	<svg width="1160" height="514" id="fullmap"></svg>
-	<svg width="960" height="500" id="act_plot"></svg>
+	<div id="div1"></div>
+	<div id="div2"></div>
+	<div id="div3"></div>
+	<div id="div4"></div>
 
-	<div class="dict" id="spritediv"></div>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/spectra.js') }}"></script>
 
