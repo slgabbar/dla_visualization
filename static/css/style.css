@@ -1,10 +1,84 @@
 html, body { height: 100%; padding: 0; margin: 0; }
-div { width: 50%; height: 50%; float: left; }
-#div1 { background: #DDD; }
-#div2 { background: #AAA; }
-#div3 { background: #777; }
-#div4 { background: #444; }
 
+.sidenav {
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #AFD;
+    overflow-x: hidden;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.collapsible {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.content {
+  font-size: 12px;
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #eee;
+}
+
+.active, .collapsible:hover {
+  background-color: #ccc;
+}
+
+#div1 {
+    /*This is the flux plot div*/
+    margin-top: 100px;
+    margin-left: 400px;
+    width: 960px;
+    height: 500px;
+    background: #DDD;
+    display: inline-block;
+    vertical-align: bottom;
+}
+#div2 {
+    /*This is the interactive sprites*/
+    width: 1100px;
+    height: 200px;
+    background: #DDA;
+    display: inline-block;
+    margin-left: 330px;
+    margin-bottom: 100px;
+    vertical-align: bottom;
+}
+
+#div3 {
+    /*This is the spritemap div.*/
+    margin-top: 100px;
+    width: 1160px;
+    height: 500px;
+    background: #FDD;
+    display: inline-block;
+    margin-left: 100px;
+    vertical-align: top;
+}
+#div4 {
+    /*This is the activation plot*/
+    margin-top: 50px;
+    margin-left: 130px;
+    width: 960px;
+    height: 500px;
+    background: #DAD;
+    display: inline-block;
+    vertical-align: bottom;
+    /*text-align: center;*/
+}
 
 .line {
 	stroke: black;
@@ -18,8 +92,6 @@ div { width: 50%; height: 50%; float: left; }
     fill: none;
     stroke-width: 2px;
 }
-
-
 
 .pointer_container rect {
 	opacity: 0;
@@ -38,9 +110,11 @@ div { width: 50%; height: 50%; float: left; }
     vertical-align: bottom;
     padding-bottom: 64px;
     margin-left: 64px;
+    width: 500px;
 }
 
 .entry {
+    vertical-align: bottom;
     margin-top: 9px;
     margin-right: 32px;
     display: inline-block;
@@ -48,6 +122,7 @@ div { width: 50%; height: 50%; float: left; }
 
 .value {
     display: inline-block;
+    vertical-align: bottom;
     width: 32px;
     border-radius: 8px;
     background: #777;

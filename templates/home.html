@@ -10,45 +10,88 @@
 
 </head>
 <body>
-	<div id="spectra_select">
-		<form>
-			<select id="flux_data">
-				<option value = "flux">flux</option>
-				<option value = "flux0">flux0</option>
-				<option value = "flux1">flux1</option>
-				<option value = "flux2">flux2</option>
-				<option value = "flux3">flux3</option>
-				<option value = "fluxA">fluxA</option>
-				<option value = "fluxB">fluxB</option>
-				<option value = "fluxC">fluxC</option>
-			</select>
-			<button onclick="loadData()">Plot Data</button>
-		</form>
-	</div>
-	<div id="layer_select">
-		<form>
-			<select id="layers">
-				<option value = "conv1">conv1</option>
-				<option value = "conv1_relu">conv1_relu</option>
-				<option value = "pool1">pool1</option>
-				<option value = "conv2">conv2</option>
-				<option value = "conv2_relu">conv2_relu</option>
-				<option value = "pool2">pool2</option>
-				<option value = "conv3">conv3</option>
-				<option value = "conv3_relu">conv3_relu</option>
-				<option value = "pool3">pool3</option>
-			</select>
-		</form>
-		<button onclick="createActs()">Create Activations</button>
+	<div class="sidenav">
+
+		<h2 id="side_title">Spectra Visualization</h2>
+		<h5>This web-page is a tool to visualize the model proposed in <strong>this</strong> article.
+		    You can select an example spectra data sightline and see how the model is interpreting
+		    the input at different layers.</h5>
+
+		<p>Select the spectra data from the drop down menu, then click <strong>Plot Data</strong></p>
+		<div id="spectra_select">
+			<form>
+				<select id="flux_data">
+					<option value = "flux">flux</option>
+					<option value = "flux0">flux0</option>
+					<option value = "flux1">flux1</option>
+					<option value = "flux2">flux2</option>
+					<option value = "flux3">flux3</option>
+					<option value = "fluxA">fluxA</option>
+					<option value = "fluxB">fluxB</option>
+					<option value = "fluxC">fluxC</option>
+				</select>
+				<button onclick="loadData()">Plot Data</button>
+			</form>
+		</div>
+
+		<p>Select the layer you would like to see the visualizations for, then click <strong>Visualize</strong></p>
+
+		<div id="layer_select">
+			<form>
+				<select id="layers">
+					<option value = "conv1">conv1</option>
+					<option value = "conv1_relu">conv1_relu</option>
+					<option value = "pool1">pool1</option>
+					<option value = "conv2">conv2</option>
+					<option value = "conv2_relu">conv2_relu</option>
+					<option value = "pool2">pool2</option>
+					<option value = "conv3">conv3</option>
+					<option value = "conv3_relu">conv3_relu</option>
+					<option value = "pool3">pool3</option>
+				</select>
+			<button onclick="createActs()">Visualize</button>
+			</form>
+		</div>
+
+		<p>For a better understanding of each tool click on one of the buttons below:</p>
+
+		<button type="button" class="collapsible">Flux plot</button>
+		<div class="content">
+  			<p>This first plot is a simple graph of the data. You can use the smaller rectangle to
+			   pan over the area of data you are interested in, in 400 length increments. After
+			   visualizing a layer you will be able to pan over all the channels in that layer.</p>
+		</div>
+		<button type="button" class="collapsible">Full spritemap</button>
+		<div class="content">
+  			<p>The full spritemap shows all the visualizations for every channel in the observed layer.
+			   A red rectangle represents a negative activation, and a green rectangle represents a
+			   positive activation. </p>
+		</div>
+		<button type="button" class="collapsible">Best activations</button>
+		<div class="content">
+  			<p>This segment provides a closer look at the best 4 optimizations of the channel in
+			   focus. </p>
+		</div>
+		<button type="button" class="collapsible">Activation plot</button>
+		<div class="content">
+  			<p>This is a plot of the activation levels for the observed layer at the different channels. </p>
+		</div>
 	</div>
 
+
+
+
+
+
+
 	<div id="div1"></div>
-	<div id="div2"></div>
 	<div id="div3"></div>
+	<div id="div2"></div>
 	<div id="div4"></div>
 
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/spectra.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/style.js') }}"></script>
 
 </body> 
 

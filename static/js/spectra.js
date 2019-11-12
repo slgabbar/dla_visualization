@@ -3,7 +3,6 @@ $.ajaxSetup({
   contentType: "application/json; charset=utf-8"
 });
 
-
 /*
 * Define global variables
 * current_act_array - holds the current activation values
@@ -105,6 +104,21 @@ function drawPlot(data) {
         .attr("class", "axis axis--y")
         .call(yAxis);
 
+    focus.append("text")
+        .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
+        .style("text-anchor", "middle")
+        .text("Wavelength");
+
+    focus.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0- (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Flux");
+
+
+
     context.append("path")
         .datum(data)
         .attr("class", "line")
@@ -176,9 +190,24 @@ function plotActivation(data) {
         .attr("transform", "translate(0," + act_height + ")")
         .call(xAxis);
 
+    act_focus.append("text")
+        .attr("transform", "translate(" + (act_width/2) + " ," + (act_height + act_margin.top + 20) + ")")
+        .style("text-anchor", "middle")
+        .text("Channel Number");
+
     act_focus.append("g")
         .attr("class", "axis axis--y")
         .call(yAxis);
+
+    act_focus.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - act_margin.left)
+        .attr("x", 0- (act_height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Activation amount");
+
+
 }
 
 function brushed() {
@@ -271,6 +300,9 @@ function createActs() {
     d3.select("#div3").selectAll("*").remove();
     pointer.selectAll("rect").remove();
 
+    // Clear any old activatuion graph
+    d3.select("#div4").selectAll("*").remove();
+
     // Add all rectangles based on the layer
     layer_dims = num_channels(LAYER)
     n = layer_dims[0];
@@ -346,7 +378,7 @@ function load_activations(str) {
 function update_sprites(mouse_pos) {
 
     d3.select("#div2").selectAll("*").remove();
-    var sprite = d3.select("#div2").append("div").attr("class", "dict");
+//    var tmp = d3.select("#div2").append("div").attr("class", "dict");
 
     channel_n = mouse_pos;
     current_sprites = current_act_array[channel_n];
@@ -370,29 +402,29 @@ function update_sprites(mouse_pos) {
     s4_val = 157*(sprite4['v']/denom);
     if (s4_val < 0) {return 0;}
 
-    var t1 = d3.select(".dict").append("div")
-        .attr("class", "entry");
+//    var t1 = d3.select(".dict").append("div").attr("class", "entry");/
+    var t1 = d3.select("#div2").append("div").attr("class", "entry");
     var s1 = t1.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s1_url + ")");
     var v1 = t1.append("div").attr("class", "value")
         .attr("style", "height: " + s1_val + "px");
 
-    var t2 = d3.select(".dict").append("div")
-        .attr("class", "entry");
+//    var t2 = d3.select(".dict").append("div").attr("class", "entry");
+    var t2 = d3.select("#div2").append("div").attr("class", "entry");
     var s2 = t2.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s2_url + ")");
     var v2 = t2.append("div").attr("class", "value")
         .attr("style", "height: " + s2_val + "px");
 
-    var t3 = d3.select(".dict").append("div")
-        .attr("class", "entry");
+//    var t3 = d3.select(".dict").append("div").attr("class", "entry");
+    var t3 = d3.select("#div2").append("div").attr("class", "entry");
     var s3 = t3.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s3_url + ")");
     var v3 = t3.append("div").attr("class", "value")
         .attr("style", "height: " + s3_val + "px");
 
-    var t4 = d3.select(".dict").append("div")
-        .attr("class", "entry");
+//    var t4 = d3.select(".dict").append("div").attr("class", "entry");
+    var t4 = d3.select("#div2").append("div").attr("class", "entry");
     var s4 = t4.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s4_url + ")");
     var v4 = t4.append("div").attr("class", "value")
@@ -412,7 +444,7 @@ function display_spritemap(s_url, layer, avg_acts) {
         num_rows = 10;
         num_cols = 10;
         x_factor = 116;
-        y_factor = 51.4;
+        y_factor = 50;
         width = 100;
         height = 41.4;
         x_start = 8;
