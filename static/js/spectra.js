@@ -104,10 +104,10 @@ function drawPlot(data) {
         .attr("class", "axis axis--y")
         .call(yAxis);
 
-    focus.append("text")
-        .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
-        .style("text-anchor", "middle")
-        .text("Wavelength");
+//    focus.append("text")
+//        .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
+//        .style("text-anchor", "middle")
+//        .text("Wavelength");
 
     focus.append("text")
         .attr("transform", "rotate(-90)")
@@ -262,7 +262,7 @@ function num_channels(layer) {
 function loadData() {
     var e = document.getElementById('flux_data');
     flux = e.options[e.selectedIndex].value;
-    flux = flux + '.npy'
+    flux = 'data/' + flux + '.npy'
     json_input = JSON.stringify(flux);
 
     $.post("plot_flux", json_input, function(response){
@@ -394,13 +394,13 @@ function update_sprites(mouse_pos) {
 
     denom = 150;
     s1_val = 157*(sprite1['v']/denom);
-    if (s1_val < 0) {return 0;}
+    if (s1_val <= 0) {return 0.01;}
     s2_val = 157*(sprite2['v']/denom);
-    if (s2_val < 0) {return 0;}
+    if (s2_val <= 0) {return 0.01;}
     s3_val = 157*(sprite3['v']/denom);
-    if (s3_val < 0) {return 0;}
+    if (s3_val <= 0) {return 0.01;}
     s4_val = 157*(sprite4['v']/denom);
-    if (s4_val < 0) {return 0;}
+    if (s4_val <= 0) {return 0.01;}
 
 //    var t1 = d3.select(".dict").append("div").attr("class", "entry");/
     var t1 = d3.select("#div2").append("div").attr("class", "entry");
@@ -453,7 +453,7 @@ function display_spritemap(s_url, layer, avg_acts) {
         num_rows = 8;
         num_cols = 12;
         x_factor = 96.66666666666;
-        y_factor = 64.25;
+        y_factor = 62.25;
         width = 83.3333333333;
         height = 51.75;
         x_start = 6.66666666666;
@@ -504,5 +504,17 @@ function display_spritemap(s_url, layer, avg_acts) {
                 return "stroke: hsl(0, 100%, " + p_str;
             }
         });
+}
 
+function plot_uploaded_file() {
+    console.log("Attempting to plot uploaded file...");
+    console.log(fileup);
+
+    flux = 'data/uploads/' + fileup;
+    json_input = JSON.stringify(flux);
+
+    $.post("plot_flux", json_input, function(response){
+        plot_response(response);
+    });
+    event.preventDefault();
 }

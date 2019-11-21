@@ -28,11 +28,22 @@
 					<option value = "flux3">flux3</option>
 					<option value = "fluxA">fluxA</option>
 					<option value = "fluxB">fluxB</option>
-					<option value = "fluxC">fluxC</option>
+<!--					<option value = "fluxC">fluxC</option>-->
 				</select>
 				<button onclick="loadData()">Plot Data</button>
 			</form>
 		</div>
+
+		<p><strong>Or</strong> upload your own file to test:</p>
+
+		<form id = uploadform" method="post" action="/" enctype="multipart/form-data">
+			<input type="file" id = "filename" name="file" autocomplete="off"/>
+			<input id='uploadfile' type = "submit" value="Upload" onchange="upload()">
+			<script>
+				var fileup = '{{ filedata }}';
+			</script>
+		</form>
+		<button onclick="plot_uploaded_file();" >Plot Data</button>
 
 		<p>Select the layer you would like to see the visualizations for, then click <strong>Visualize</strong></p>
 
