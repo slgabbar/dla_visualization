@@ -265,6 +265,10 @@ function loadData() {
     flux = 'data/' + flux + '.npy'
     json_input = JSON.stringify(flux);
 
+    // Remove all old srpites fronm tghe display
+//    d3.select("#div3").selectAll("*").remove();
+//    pointer.selectAll("rect").remove();
+
     $.post("plot_flux", json_input, function(response){
         plot_response(response);
     });
@@ -276,6 +280,10 @@ function plot_response(r) {
     var flux_dict = JSON.parse(r);
     flux_data = flux_dict;
     drawPlot(flux_data);
+
+    // Remove all old srpites fronm tghe display
+    d3.select("#div3").selectAll("*").remove();
+    pointer.selectAll("rect").remove();
 }
 
 function createActs() {

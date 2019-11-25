@@ -7,10 +7,26 @@ html, body { height: 100%; padding: 0; margin: 0; }
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #AFD;
+    background-color: #C8C8C8;
     overflow-x: hidden;
-    padding-top: 20px;
     text-align: center;
+    border: 4px solid black;
+    border-radius: 2px;
+}
+
+#side_header {
+    margin-top: 0;
+    height: 65px;
+    color: black;
+    background-color: #505050;
+    border-bottom: 5px solid black;
+}
+
+#side_desc {
+    margin-left: 10px;
+    color: black;
+    text-align: left;
+
 }
 
 .collapsible {
