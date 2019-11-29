@@ -22,7 +22,6 @@ Keras-Preprocessing==1.1.0
 llvmlite==0.30.0
 lucid==0.3.8
 Markdown==3.1.1
-MarkupSafe==1.1.1
 more-itertools==7.2.0
 numba==0.46.0
 numpy==1.17.4
@@ -30,7 +29,6 @@ parso==0.5.1
 pexpect==4.7.0
 pickleshare==0.7.5
 Pillow==6.2.1
-pkg-resources==0.0.0
 prompt-toolkit==3.0.0
 protobuf==3.11.0
 ptyprocess==0.6.0

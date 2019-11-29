@@ -53,25 +53,6 @@ def upload_file():
 def home():
     return render_template("home.html", data=None)
 
-# @app.route("/plot_uploaded", methods=['POST'])
-# def plot_uploaded():
-#     print(FILENAME)
-#     return None
-#     # infile = 'data/uploads/' + FILENAME
-#     # print(infile)
-#     # data = np.load(infile)
-#     # count = 0
-#     # arr = []
-#     # for f in data:
-#     #     vals = {}
-#     #     vals['wave']=count
-#     #     vals['flux']=f.item()
-#     #     arr.append(vals)
-#     #     count += 1
-#     # flux_data = json.dumps(arr)
-#     # return flux_data
-
-
 @app.route("/plot_flux", methods=['POST'])
 def plot_flux():
     data_str = request.get_json()
@@ -131,10 +112,10 @@ LAYERS = { 'conv1': 'Conv2D',
 
 
 model = DLA()
+model.load_graphdef()
 
 def run_acts(data, layer):
     input = get_input(data)
-    # print(input)
     with tf.Graph().as_default(), tf.Session() as sess:
         t_input = tf.placeholder(tf.float32, shape=[1, 400, 1, 1])
         T = render.import_model(model, t_input, t_input)
