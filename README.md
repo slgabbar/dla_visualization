@@ -1,3 +1,3 @@
 # Spectra Visualization Tool
 
-This is the readme for the webapplication
+currently hosted at: https://stormy-shore-28190.herokuapp.com/
