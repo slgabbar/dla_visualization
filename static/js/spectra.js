@@ -415,28 +415,28 @@ function update_sprites(mouse_pos) {
     var s1 = t1.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s1_url + ")");
     var v1 = t1.append("div").attr("class", "value")
-        .attr("style", "height: " + s1_val + "px");
+        .attr("style", "height: " + s1_val + "px;margin-left:10px;");
 
 //    var t2 = d3.select(".dict").append("div").attr("class", "entry");
     var t2 = d3.select("#div2").append("div").attr("class", "entry");
     var s2 = t2.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s2_url + ")");
     var v2 = t2.append("div").attr("class", "value")
-        .attr("style", "height: " + s2_val + "px");
+        .attr("style", "height: " + s2_val + "px;margin-left:10px;");
 
 //    var t3 = d3.select(".dict").append("div").attr("class", "entry");
     var t3 = d3.select("#div2").append("div").attr("class", "entry");
     var s3 = t3.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s3_url + ")");
     var v3 = t3.append("div").attr("class", "value")
-        .attr("style", "height: " + s3_val + "px");
+        .attr("style", "height: " + s3_val + "px;margin-left:10px;");
 
 //    var t4 = d3.select(".dict").append("div").attr("class", "entry");
     var t4 = d3.select("#div2").append("div").attr("class", "entry");
     var s4 = t4.append("div").attr("class", "sprite")
         .attr("style", "background-image: url(" + s4_url + ")");
     var v4 = t4.append("div").attr("class", "value")
-        .attr("style", "height: " + s4_val + "px");
+        .attr("style", "height: " + s4_val + "px;margin-left:10px;");
 }
 
 function display_spritemap(s_url, layer, avg_acts) {
